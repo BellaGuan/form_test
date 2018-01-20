@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>password</title>
+    <style>
+   body style,script{
+        display:block;
+        background-color:#f5f5f5;
+        color:#000;
+        white-space:pre-wrap;
+        word-wrap:break-word;
+    }
+    </style>
+</head>
+<body>
+    <style contenteditable>
+        ul{
+            list-style:none;
+            padding-left: 10px
+        }
+        li:before {
+            content: "❌";
+        }
+        li.check:before{
+            content: "✔️";
+        }
+    </style>
+
+    <ul>
+        <li id="len">16-100 字符</li>
+        <li id="sym">至少一个符号：!@#$%^&*</li>
+        <li id="num">至少一个数字</li>
+        <li id="upper">至少一个大写字母</li>
+        <li id="lower">至少一个小写字母</li>
+    </ul>
+
+    <form>
+        <label for='ps'>输入新密码：
+            <input type="password" name="ps" id="ps" />
+        </label><br/>
+        <label for='rps'>确认新密码：
+            <input type="password" name="rps" id="rps" />
+        </label>
+        <input type="image" src="img_submit.gif" alt="submit" width="20px" height="20px">
+    </form>
+
+    <label for="frmNameCC">Name on card</label>
+    <input name="ccname" id="frmNameCC" required placeholder="Full Name" autocomplete="cc-name">
+
+    <label for="frmCCNum">Card Number</label>
+    <input name="cardnumber" id="frmCCNum" required autocomplete="cc-number">
+
+    <label for="frmCCCVC">CVC</label>
+    <input name="cvc" id="frmCCCVC" required autocomplete="cc-csc">
+
+    <label for="frmCCExp">Expiry</label>
+    <input name="cc-exp" id="frmCCExp" required placeholder="MM-YYYY" autocomplete="cc-exp">
+
+    <script>
+        var ps=document.getElementById('ps'),
+            rps=document.getElementById('rps'),
+            pastCollect=[];
+
+        ps.oninput=function(){
+            var len=document.getElementById('len'),
+                sym=document.getElementById('sym'),
+                num=document.getElementById('num'),
+                upper=document.getElementById('upper'),
+                lower=document.getElementById('lower');
+
+            if(/\s+/g.test(ps.value)){
+                ps.setCustomValidity("请不要输入空白字符");
+            }
+
+            if(ps.value.length>6 && ps.value.length<100){
+                len.setAttribute("class","check");
+            }else{
+                len.removeAttribute("class");
+                ps.setCustomValidity("至少6个字符");
+            }
+
+            if(/[\!\@\#\$\%\^\&\*]+/g.test(ps.value)){
+                sym.setAttribute("class","check");
+            }else{
+                sym.removeAttribute("class");
+                ps.setCustomValidity("密码至少包含一个!@#$%^&*");
+            }
+
+            if(/\d+/g.test(ps.value)){
+                num.setAttribute("class","check");
+            }else{
+                num.removeAttribute("class");
+                ps.setCustomValidity("密码至少包含一个数字");
+            }
+            if(/[A-Z]+/g.test(ps.value)){
+                upper.setAttribute("class","check");
+            }else{
+                upper.removeAttribute("class");
+                ps.setCustomValidity("密码至少包含一个大写字母");
+            }
+
+            if(/[a-z]+/g.test(ps.value)){
+                lower.setAttribute("class","check");
+            }else{
+                lower.removeAttribute("class");
+                ps.setCustomValidity("密码至少包含一个小写字母");
+            }
+
+            var lis=document.getElementsByTagName("li");
+            pastCollect=[];
+            for(var i=0;i<lis.length;i++){
+                pastCollect.push(lis[i].getAttribute("class")=="check");
+            }
+
+            checkTwoPs();
+        }
+
+        rps.onchange=function(){
+            checkTwoPs();
+        }
+
+        function checkTwoPs(){
+            var if_pastCollect = !pastCollect.includes(false),
+                if_psEqual = (rps.value == ps.value);
+
+            if(if_pastCollect){
+                ps.setCustomValidity('');
+            }
+
+            if(if_psEqual){
+                rps.setCustomValidity('');
+            }else{
+                rps.setCustomValidity('两次密码不一样');
+            }
+        }
+    </script>
+</body>
+</html>
